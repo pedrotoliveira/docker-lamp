@@ -49,18 +49,15 @@ To complicate things even further I needed an image, or actually two, that would
 Designed to be a single interface that just 'gets out of your way', and works on 14.04 and 16.04 with php 5 and 7. You can move between all 4 images without changing how you work with Docker.
 
 ## Image Versions
-> **NOTE:** [PHP 5.6 is end of life][end-of-life], so the PHP 5 images `mattrayner/lamp:latest-1404-php5` and `mattrayner/lamp:latest-1604-php5` will not receive any updates. Although these images will stay on Docker Hub, we **strongly** recommend updating you applications to PHP7.
 
-> **NOTE**: The 14.04 variant of this image is no longer being actively supported for updated
+The table below shows the different tags you can use, along with the PHP, MySQL and Apache versions that come with it.
 
-There are 4 main 'versions' of the docker image. The table below shows the different tags you can use, along with the PHP, MySQL and Apache versions that come with it.
-
-Component | `latest-1404` | `latest-1604` | `latest-1804`
+Component || `latest-1604` | `latest-1804`
 ---|---|---|---
-[Apache][apache] | `2.4.7` | `2.4.18` | `2.4.29`
-[MySQL][mysql] | `5.5.62` | `5.7.26` | `5.7.26`
-[PHP][php] | `7.3.3` | `7.3.6` | `7.3.6`
-[phpMyAdmin][phpmyadmin] | `4.8.5` | `4.9.0.1` | `4.9.0.1`
+[Apache][apache] | `2.4.18` | `2.4.29`
+[MySQL][mysql] | `5.7.26` | `5.7.26`
+[PHP][php] | `7.3.6` | `7.3.6`
+[phpMyAdmin][phpmyadmin] |`4.9.0.1` | `4.9.0.1`
 
 
 ## Using the image
@@ -68,18 +65,16 @@ Component | `latest-1404` | `latest-1604` | `latest-1804`
 This is the quickest way
 ```bash
 # Launch a 18.04 based image
-docker run -p "80:80" -v ${PWD}/app:/app pedrotoliveira/lamp:latest-1804
+docker run -p "80:80" -p "3306:3306" -v ${HOME_APP}/app:/app -v ${HOME_APP}/mysql:/var/lib/mysql -v ${HOME_APP}/etc/mysql:/etc/mysql pedrotoliveira/lamp:latest
 
 # Launch a 16.04 based image
-docker run -p "80:80" -v ${PWD}/app:/app pedrotoliveira/lamp:latest-1604
+docker run -p "80:80" -p "3306:3306" -v ${HOME_APP}/app:/app -v ${HOME_APP}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest-1604 
 
-# Launch a 14.04 based image
-docker run -p "80:80" -v ${PWD}/app:/app pedrotoliveira/lamp:latest-1404
 ```
 
 ### With a Dockerfile
 ```docker
-FROM pedrotoliveira/lamp:latest-1804
+FROM pedrotoliveira/lamp:latest
 
 # Your custom commands
 
@@ -126,7 +121,7 @@ In english, your project should contain a folder called `app` containing all of 
 ### Adding your app
 The below command will run the docker image `pedrotoliveira/lamp:latest` interactively, exposing port `80` on the host machine with port `80` on the docker container. It will then create a volume linking the `app/` directory within your project to the `/app` directory on the container. This is where Apache is expecting your PHP to live.
 ```bash
-docker run -i -t -p "80:80" -v ${PWD}/app:/app pedrotoliveira/lamp:latest
+docker run -i -t -p "80:80" -v ${HOME_APP}/app:/app pedrotoliveira/lamp:latest
 ```
 
 ### Persisting your MySQL
@@ -134,13 +129,13 @@ The below command will run the docker image `pedrotoliveira/lamp:latest`, creati
 
 You may also add `-p 3306:3306` after `-p 80:80` to expose the mysql sockets on your host machine. This will allow you to connect an external application such as SequelPro or MySQL Workbench.
 ```bash
-docker run -i -t -p "80:80" -v ${PWD}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
+docker run -i -t -p "80:80" -v ${HOME_APP}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
 ```
 
 ### Doing both
 The below command is our 'recommended' solution. It both adds your own PHP and persists database files. We have created a more advanced alias in our `.bash_profile` files to enable the short commands `ldi` and `launchdocker`. See the next section for an example.
 ```bash
-docker run -i -t -p "80:80" -v ${PWD}/app:/app -v ${PWD}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
+docker run -i -t -p "80:80" -v ${HOME_APP}/app:/app -v ${HOME_APP}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
 ```
 
 #### `.bash_profile` alias examples
@@ -162,7 +157,7 @@ function launchdockerwithparams {
         MYSQL_PORT_COMMAND="-p \"$2:3306\""
     fi
 
-    docker run -i -t -p "$APACHE_PORT:80" $MYSQL_PORT_COMMAND -v ${PWD}/app:/app -v ${PWD}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
+    docker run -i -t -p "$APACHE_PORT:80" $MYSQL_PORT_COMMAND -v ${HOME_APP}/app:/app -v ${HOME_APP}/mysql:/var/lib/mysql pedrotoliveira/lamp:latest
 }
 alias launchdocker='launchdockerwithparams $1 $2'
 alias ldi='launchdockerwithparams $1 $2'
