@@ -1,7 +1,5 @@
 FROM phusion/baseimage
-MAINTAINER Matthew Rayner <matt@mattrayner.co.uk>
-
-RUN apt-get update && apt-get install -yq curl && apt-get clean
+MAINTAINER Pedro Thiago A. G. Oliveira <hhttps://github.com/pedrotoliveira>
 
 WORKDIR /app
 

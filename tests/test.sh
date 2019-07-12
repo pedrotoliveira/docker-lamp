@@ -2,7 +2,7 @@
 source _helpers.sh
 
 echo
-echo "Testing mattrayner/lamp"
+echo "Testing pedrotoliveira/lamp"
 echo "=> Sleeping to allow boot of containers"
 sleep 60
 

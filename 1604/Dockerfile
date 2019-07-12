@@ -1,9 +1,10 @@
-FROM phusion/baseimage:0.10.2
-MAINTAINER Matthew Rayner <hello@rayner.io>
-ENV REFRESHED_AT 2019-06-11
+FROM phusion/baseimage
+MAINTAINER Pedro Thiago A. G. Oliveira <hhttps://github.com/pedrotoliveira>
+ENV REFRESHED_AT 2019-06-12
 
 # based on dgraziotin/lamp
 # MAINTAINER Daniel Graziotin <daniel@ineed.coffee>
+# Modified By Pedro Oliveira <pedro.oliveira@thoughtworks.com>
 
 ENV DOCKER_USER_ID 501 
 ENV DOCKER_USER_GID 20
