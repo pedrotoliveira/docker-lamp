@@ -188,7 +188,7 @@ ldi 3000 3306
 git clone https://github.com/pedrotoliveira/docker-lamp.git
 cd docker-lamp
 
-# Build the 18.04, 16.04 image and the 14.04 images
+# Build the 18.04, 16.04 image
 docker build -t=pedrotoliveira/lamp:latest -f ./1804/Dockerfile .
 docker build -t=pedrotoliveira/lamp:latest-1604 -f ./1604/Dockerfile .
 
@@ -256,12 +256,9 @@ Docker-LAMP is licensed under the [Apache 2.0 License][info-license].
 
 [end-of-life]: http://php.net/supported-versions.php
 
-[info-build-status]: https://circleci.com/gh/mattrayner/docker-lamp
-[info-docker-hub]: https://hub.docker.com/r/mattrayner/lamp
+[info-docker-hub]: https://hub.docker.com/r/pedrotoliveira/lamp
 [info-license]: LICENSE
 
-[shield-build-status]: https://img.shields.io/circleci/project/mattrayner/docker-lamp.svg
-[shield-docker-hub]: https://img.shields.io/badge/docker%20hub-mattrayner%2Flamp-brightgreen.svg
 [shield-license]: https://img.shields.io/badge/license-Apache%202.0-blue.svg
 
 [dgraziotin-lamp]: https://github.com/dgraziotin/osx-docker-lamp
