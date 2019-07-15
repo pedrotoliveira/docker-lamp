@@ -83,7 +83,7 @@ RUN apt-get install -y \
 
 RUN a2enmod proxy_fcgi setenvif
 RUN a2enconf php7.3-fpm
-RUN service apache2 restar
+RUN service apache2 restart
 
 RUN apt-get -y install libmcrypt-dev
 RUN pecl channel-update pecl.php.net
