@@ -1,20 +1,22 @@
 #!/bin/bash
 
 VOLUME_HOME="/var/lib/mysql"
+PHP_VERSION="7.3"
 
-if [ -e /etc/php/5.6/apache2/php.ini ]
+if [[ -e /etc/php/5.6/apache2/php.ini ]]
 then
     sed -ri -e "s/^upload_max_filesize.*/upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}/" \
         -e "s/^post_max_size.*/post_max_size = ${PHP_POST_MAX_SIZE}/" /etc/php/5.6/apache2/php.ini
 else
     sed -ri -e "s/^upload_max_filesize.*/upload_max_filesize = ${PHP_UPLOAD_MAX_FILESIZE}/" \
-        -e "s/^post_max_size.*/post_max_size = ${PHP_POST_MAX_SIZE}/" /etc/php/7.2/apache2/php.ini
+        -e "s/^post_max_size.*/post_max_size = ${PHP_POST_MAX_SIZE}/" /etc/php/${PHP_VERSION}/apache2/php.ini
+
 fi
 
 
 sed -i "s/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=staff/" /etc/apache2/envvars
 
-if [ -n "$APACHE_ROOT" ];then
+if [[ -n "$APACHE_ROOT" ]]; then
     rm -f /var/www/html && ln -s "/app/${APACHE_ROOT}" /var/www/html
 fi
 
@@ -22,9 +24,9 @@ sed -i -e "s/cfg\['blowfish_secret'\] = ''/cfg['blowfish_secret'] = '`date | md5
 
 mkdir -p /var/run/mysqld
 
-if [ -n "$VAGRANT_OSX_MODE" ];then
-    usermod -u $DOCKER_USER_ID www-data
-    groupmod -g $(($DOCKER_USER_GID + 10000)) $(getent group $DOCKER_USER_GID | cut -d: -f1)
+if [[ -n "${VAGRANT_OSX_MODE}" ]]; then
+    usermod -u ${DOCKER_USER_ID} www-data
+    groupmod -g $((${DOCKER_USER_GID} + 10000)) $(getent group ${DOCKER_USER_GID} | cut -d: -f1)
     groupmod -g ${DOCKER_USER_GID} staff
     chmod -R 770 /var/lib/mysql
     chmod -R 770 /var/run/mysqld
@@ -45,15 +47,15 @@ rm /var/run/mysqld/mysqld.sock
 sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 sed -i "s/user.*/user = www-data/" /etc/mysql/my.cnf
 
-if [[ ! -d $VOLUME_HOME/mysql ]]; then
-    echo "=> An empty or uninitialized MySQL volume is detected in $VOLUME_HOME"
+if [[ ! -d ${VOLUME_HOME}/mysql ]]; then
+    echo "=> An empty or uninitialized MySQL volume is detected in ${VOLUME_HOME}"
     echo "=> Installing MySQL ..."
 
     # Try the 'preferred' solution
     mysqld --initialize-insecure > /dev/null 2>&1
 
     # IF that didn't work
-    if [ $? -ne 0 ]; then
+    if [[ $? -ne 0 ]]; then
         # Fall back to the 'depreciated' solution
         mysql_install_db > /dev/null 2>&1
     fi
